@@ -19,3 +19,5 @@ public:
         cout << "Right: " << &right << endl;
     }
 };
+
+// All rights reserved by Affan Hameed and Bilal Mehmood.

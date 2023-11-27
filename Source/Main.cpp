@@ -12,3 +12,5 @@ int main()
     t.print();
     return 0;
 }
+
+// All rights reserved by the Affan Hameed and Bilal Mehmood.
