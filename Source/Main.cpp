@@ -10,4 +10,5 @@ int main()
     Tree t;
     cout << "This cout is to test if the code is working in visual studio" << endl;
     t.print();
+    return 0;
 }
