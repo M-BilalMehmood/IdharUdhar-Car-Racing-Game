@@ -45,18 +45,52 @@ public:
         adjList[w].edgeCount++;
     }
 
-    void print()
+    void makeGrid(int n)
     {
+        srand(time(0));
+        for (int i = 0; i < n; ++i) 
+        {
+            for (int j = 0; j < n; ++j) 
+            {
+                if (rand() % 2) { // 50% chance to add a horizontal edge
+                    if (j < n - 1) { // Don't add a horizontal edge for the last column
+                        addEdge(i, j, i, j + 1, rand() % 100 + 1); // Random weight between 1 and 100
+                    }
+                }
+                if (rand() % 2) { // 50% chance to add a vertical edge
+                    if (i < n - 1) { // Don't add a vertical edge for the last row
+                        addEdge(i, j, i + 1, j, rand() % 100 + 1); // Random weight between 1 and 100
+                    }
+                }
+            }
+        }
+        print(n);
+    }
+
+    void print(int n)
+    {
+        system("cls");
         for (int i = 0; i < vertexCount; ++i)
         {
             for (int j = 0; j < vertexCount; ++j)
             {
                 int v = i * vertexCount + j;
                 // cout << i << j;
-                cout << "\e[35m<>\e[0m";
+                if (i == 0 && j == 0)
+                {
+                    cout << "\033[35m<\033[32mS\033[35m>\033[0m";
+                }
+                else if (i == n - 1 && j == n - 1)
+                {
+                    cout << "\033[35m<\033[32mE\033[35m>\033[0m";
+                }
+                else
+                {
+                    cout << "\033[35m<->\033[0m";
+                }
                 if (find(adjList[v].edges, adjList[v].edges + adjList[v].edgeCount, v + 1) != adjList[v].edges + adjList[v].edgeCount)
                 {
-                    cout << "\e[36m-----\e[0m";
+                    cout << "\033[36m-----\033[0m";
                 }
                 else
                 {
@@ -71,11 +105,11 @@ public:
                     int v = i * vertexCount + j;
                     if (find(adjList[v].edges, adjList[v].edges + adjList[v].edgeCount, v + vertexCount) != adjList[v].edges + adjList[v].edgeCount)
                     {
-                        cout << "\e[36m |     \e[0m";
+                        cout << "\033[36m |      \033[0m";
                     }
                     else
                     {
-                        cout << "       ";
+                        cout << "        ";
                     }
                 }
                 cout << endl;
