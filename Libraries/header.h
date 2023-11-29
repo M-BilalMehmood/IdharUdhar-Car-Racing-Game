@@ -2,6 +2,7 @@
 #include <string>
 #include <algorithm>
 #include <ctime>
+#include "/Git Dev/DS-Project/DS-Project/Libraries/Queue.h"
 using namespace std;
 
 struct Node
@@ -48,23 +49,53 @@ public:
     void makeGrid(int n)
     {
         srand(time(0));
-        for (int i = 0; i < n; ++i) 
+        for (int i = 0; i < n; ++i)
         {
-            for (int j = 0; j < n; ++j) 
+            for (int j = 0; j < n; ++j)
             {
-                if (rand() % 2) { // 50% chance to add a horizontal edge
-                    if (j < n - 1) { // Don't add a horizontal edge for the last column
-                        addEdge(i, j, i, j + 1, rand() % 100 + 1); // Random weight between 1 and 100
+                if (rand() % 10 < 6.5)  // 65% chance to add a horizontal edge
+                {
+                    if (j < n - 1)  // Don't add a horizontal edge for the last column
+                    {
+                        addEdge(i, j, i, j + 1, rand() % 10 + 1); // Random weight between 1 and 10
                     }
                 }
-                if (rand() % 2) { // 50% chance to add a vertical edge
-                    if (i < n - 1) { // Don't add a vertical edge for the last row
-                        addEdge(i, j, i + 1, j, rand() % 100 + 1); // Random weight between 1 and 100
+                if (rand() % 10 < 6.5) // 50% chance to add a vertical edge
+                {
+                    if (i < n - 1)  // Don't add a vertical edge for the last row
+                    {
+                        addEdge(i, j, i + 1, j, rand() % 10 + 1); // Random weight between 1 and 10
                     }
                 }
             }
         }
-        print(n);
+        //print(n);
+    }
+
+    bool bfs(Graph& g, int src, int dest, int m) {
+        bool* visited = new bool[m * m];
+        for (int i = 0; i < m * m; i++) visited[i] = false;
+        int n = m * m;
+        Queue q(n);
+        q.push(src);
+        visited[src] = true;
+        while (!q.empty()) {
+            int u = q.peek();
+            q.pop();
+            if (u == dest) {
+                delete[] visited;
+                return true; // We found a path to the destination
+            }
+            for (int i = 0; i < g.adjList[u].edgeCount; i++) {
+                int v = g.adjList[u].edges[i];
+                if (!visited[v]) {
+                    visited[v] = true;
+                    q.push(v);
+                }
+            }
+        }
+        delete[] visited;
+        return false; // No path found to the destination
     }
 
     void print(int n)
@@ -90,11 +121,11 @@ public:
                 }
                 if (find(adjList[v].edges, adjList[v].edges + adjList[v].edgeCount, v + 1) != adjList[v].edges + adjList[v].edgeCount)
                 {
-                    cout << "\033[36m-----\033[0m";
+                    cout << "\033[36m----\033[0m";
                 }
                 else
                 {
-                    cout << "     ";
+                    cout << "    ";
                 }
             }
             cout << endl;
@@ -105,11 +136,11 @@ public:
                     int v = i * vertexCount + j;
                     if (find(adjList[v].edges, adjList[v].edges + adjList[v].edgeCount, v + vertexCount) != adjList[v].edges + adjList[v].edgeCount)
                     {
-                        cout << "\033[36m |      \033[0m";
+                        cout << "\033[36m |     \033[0m";
                     }
                     else
                     {
-                        cout << "        ";
+                        cout << "       ";
                     }
                 }
                 cout << endl;
