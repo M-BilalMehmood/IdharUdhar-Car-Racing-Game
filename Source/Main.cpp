@@ -10,30 +10,25 @@ int main()
 {
     while (1)
     {
-        /*srand(time(0));*/ // Seed the random number generator with the current time
         cout << "::>";
         int m;
         cin >> m;
 
-        Graph g(m);
-        g.makeGrid(m);
+        // Graph g(m);
+        // g.makeGrid(m);
 
-        //for (int i = 0; i < m; ++i) {
-        //    for (int j = 0; j < m; ++j) {
-        //        if (rand() % 2) { // 50% chance to add a horizontal edge
-        //            if (j < m - 1) { // Don't add a horizontal edge for the last column
-        //                g.addEdge(i, j, i, j + 1, rand() % 100 + 1); // Random weight between 1 and 100
-        //            }
-        //        }
-        //        if (rand() % 2) { // 50% chance to add a vertical edge
-        //            if (i < m - 1) { // Don't add a vertical edge for the last row
-        //                g.addEdge(i, j, i + 1, j, rand() % 100 + 1); // Random weight between 1 and 100
-        //            }
-        //        }
-        //    }
-        //}
+        while (true) {
+            Graph g(m); // Create a graph with m*m vertices
+            // ... Add edges to the graph ...
 
-        //g.print();
+            g.makeGrid(m);
+
+            if (g.bfs(g, 0, m * m - 1, m))
+            {
+                g.print(m);
+                break;
+            }
+        }
     }
     return 0;
 }
