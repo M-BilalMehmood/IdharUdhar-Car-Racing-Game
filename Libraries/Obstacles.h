@@ -44,24 +44,7 @@ public:
 //this is the factory class => client will send message of creation here and the factory will create the object.
 class Object_Factory {
 public:
-    //Game_Flow::get_NumberOfNodes() => returns the number of nodes in the grid 
-    //----> this is from which the number of objects can be formulated. 
-    //for now, we will suppose Node_Num=10 
-
-	/*Object* Create_Object(int choice) {
-		switch (choice) {
-		case 1:
-			return new Obstacle();
-		case 2:
-			return new Coin();
-		case 3:
-			return new Multiplier();
-		default:
-			return nullptr;
-		}
-	}*/
-
-    //randomly generate an object from the factory
+     //randomly generate an object from the factory
 
     Object* Create_Object(int choice) {
         switch (choice) {
