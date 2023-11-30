@@ -9,32 +9,11 @@ using namespace std;
 
 int main()
 {
-    cout << "Choose your vehicle:" << endl;
-    cout << "1.\033[33m \\o=o>\033[0m" << endl;
-    cout << "2.\033[33m Lo=o>\033[0m" << endl;
-    cout << "3.\033[33m Co=o>\033[0m" << endl;
-    while (1)
-    {
-        cout << "::>";
-        int m;
-        cin >> m;
-
-        // Graph g(m);
-        // g.makeGrid(m);
-
-        while (true) {
-            Graph g(m); // Create a graph with m*m vertices
-            // ... Add edges to the graph ...
-
-            g.makeGrid(m);
-
-            if (g.bfs(g, 0, m * m - 1, m))
-            {
-                g.print(m);
-                break;
-            }
-        }
-    }
+    int m;
+    cout << "Enter the size of the grid: ";
+    cin >> m;
+    Graph g(m);
+    g.moveCar(m);
     return 0;
 }
 
