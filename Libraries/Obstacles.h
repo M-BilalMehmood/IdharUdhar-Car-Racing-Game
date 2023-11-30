@@ -3,15 +3,6 @@
 #include <ctime>
 using namespace std;
 
-//templatized node class for queue
-template <typename T> class Node {
-public:
-    T data;
-    Node<T>* next;
-
-    Node(T data) : data(data), next(nullptr) {}
-};
-
 
 //using factory design pattern for creating obstacles.
 class Object {
@@ -58,56 +49,5 @@ public:
 			return nullptr;
 		}
 	}
-};
-
-
-template <typename T> 
-class Object_Queue {
-private:
-    
-    Node<T>* front;
-    Node<T>* rear;
-
-public:
-    Object_Queue() : front(nullptr),rear(nullptr) {} 
-
-    void Push(T data) {
-        Node<T>* temp = new Node<T>(data);
-        if (front == nullptr) {
-            front = rear = temp;
-        }
-        else {
-            rear->next = temp;
-            rear = temp;
-        }
-    }
-
-    void Pop() {
-        if (front == nullptr) {
-            std::cout << "Queue is empty!\n";
-            return;
-        }
-        Node<T>* temp = front;
-        front = front->next;
-        delete temp;
-    }
-
-    T Get_Front() {
-        if (front == nullptr) {
-            std::cout << "Queue is empty!\n";
-            return T();
-        }
-        return front->data;
-    }
-
-    bool Is_Empty() const { return front == nullptr; }
-
-    ~Object_Queue() {
-        while (front != nullptr) {
-            Node<T>* temp = front;
-            front = front->next;
-            delete temp;
-        }
-    }
 };
 
