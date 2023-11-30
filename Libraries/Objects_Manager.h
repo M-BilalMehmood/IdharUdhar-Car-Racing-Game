@@ -8,27 +8,37 @@ using namespace std;
 class Object {
 public:
 	//pure virtual created => imperitive for derived classes to implement this function.
-	virtual void Create_Object() = 0;
+	string object_name;
+	virtual string Create_Object() = 0;
 };
 
 class Obstacle : public Object {
 public:
-	void Create_Object() override {
-		cout << "Obstacle created!" << endl;
+	Obstacle(){
+		object_name = "/===\\";
+	}
+	string Create_Object() override {
+		return object_name;
 	}
 };
 
 class Coin : public Object {
 public:
-	void Create_Object() override {
-		cout << "Coin created!" << endl;
+	Coin(){
+		object_name = "{($)}";
+	}
+	string Create_Object() override {
+		return object_name; 
 	}
 };
 
 class Multiplier : public Object {
 public:
-	void Create_Object() override {
-		cout << "Multiplier created!" << endl;
+	Multiplier(){
+		object_name = "{[*]}";
+	}
+	string Create_Object() override {
+		return object_name; 
 	}
 };
 

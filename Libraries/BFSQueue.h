@@ -2,16 +2,9 @@
 #include<iostream>
 using namespace std;
 
-struct Node
-{
-    string name;
-    int vertex;
-    int* edges;
-    int* weights;
-    int edgeCount;
-};
 
-class Queue 
+
+class BFSQueue 
 {
     int* arr;
     int capacity;
@@ -19,12 +12,12 @@ class Queue
     int size;
 
 public:
-    Queue(int capacity) : capacity(capacity), front(0), size(0) 
+    BFSQueue(int capacity) : capacity(capacity), front(0), size(0) 
     {
         arr = new int[capacity];
     }
 
-    ~Queue() 
+    ~BFSQueue() 
     {
         delete[] arr;
     }
