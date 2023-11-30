@@ -5,17 +5,8 @@
 #include <ctime>
 #include <conio.h>
 //#include "/Git Dev/DS-Project/DS-Project/Libraries/Queue.h"
-#include "Queue.h"
+#include "BFSQueue.h"
 using namespace std;
-
-struct Node
-{
-    string name;
-    int vertex;
-    int* edges;
-    int* weights;
-    int edgeCount;
-};
 
 class Graph
 {

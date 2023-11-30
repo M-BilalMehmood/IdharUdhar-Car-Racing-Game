@@ -1,48 +1,64 @@
 #pragma once
-#include<iostream>
+#include <iostream>
 using namespace std;
 
-class Queue 
-{
-    int* arr;
-    int capacity;
-    int front;
-    int size;
+//templatized node class for queue
+template <typename T> 
+class Node {
+public:
+    T data;
+    Node<T>* next;
+
+    Node(T data) : data(data), next(nullptr) {}
+};
+
+template <typename T> 
+class Queue {
+private:
+    Node<T>* front;
+    Node<T>* rear;
 
 public:
-    Queue(int capacity) : capacity(capacity), front(0), size(0) 
-    {
-        arr = new int[capacity];
+    Queue() : front(nullptr),rear(nullptr) {} 
+
+    void Push(T data) {
+        Node<T>* temp = new Node<T>(data);
+        if (front == nullptr) {
+            front = rear = temp;
+        }
+        else {
+            rear->next = temp;
+            rear = temp;
+        }
     }
 
-    ~Queue() 
-    {
-        delete[] arr;
+    void Pop() {
+        if (front == nullptr) {
+            cout << "Queue is empty!\n";
+            return;
+        }
+        Node<T>* temp = front;
+        front = front->next;
+        delete temp;
     }
 
-    void push(int x) 
-    {
-        if (size == capacity) throw runtime_error("Queue is full");
-        int rear = (front + size) % capacity;
-        arr[rear] = x;
-        size++;
+    T Get_Front() {
+        if (front == nullptr) {
+            cout << "Queue is empty!\n";
+            return T();
+        }
+        return front->data;
     }
 
-    void pop() 
-    {
-        if (size == 0) throw runtime_error("Queue is empty");
-        front = (front + 1) % capacity;
-        size--;
+    bool Is_Empty() const { 
+        return front == nullptr; 
     }
 
-    int peek() 
-    {
-        if (size == 0) throw runtime_error("Queue is empty");
-        return arr[front];
-    }
-
-    bool empty() 
-    {
-        return size == 0;
+    ~Queue() {
+        while (front != nullptr) {
+            Node<T>* temp = front;
+            front = front->next;
+            delete temp;
+        }
     }
 };
