@@ -1,13 +1,16 @@
+#pragma once
 #include <iostream>
 #include <string>
 #include <algorithm>
 #include <ctime>
+#include <conio.h>
 //#include "/Git Dev/DS-Project/DS-Project/Libraries/Queue.h"
 #include "Queue.h"
 using namespace std;
 
 struct Node
 {
+    string name;
     int vertex;
     int* edges;
     int* weights;
@@ -26,6 +29,19 @@ public:
         adjList = new Node[V * V];
         for (int i = 0; i < V * V; ++i)
         {
+            //the start and end node name should be <|S|>, <|E|>
+            if (i == 0)
+            {
+                adjList[i].name = "<\033[32m|S|\033[35m>";
+            }
+            else if (i == V * V - 1)
+            {
+                adjList[i].name = "<\033[32m|E|\033[35m>";
+            }
+            else
+            {
+                adjList[i].name = "<<+>>";
+            }
             adjList[i].vertex = i;
             adjList[i].edges = new int[V * V];
             adjList[i].weights = new int[V * V];
@@ -70,7 +86,69 @@ public:
                 }
             }
         }
-        print(n);
+    }
+
+    void car(int n)
+    {
+        if (n == 1)
+        {
+            cout << "\033[33m\\o=o>\033[0m";
+        }
+        if (n == 2)
+        {
+            cout << "\033[33mLo=o>\033[0m";
+        }
+        if (n == 3)
+        {
+            cout << "\033[33mCo=o>\033[0m";
+        }
+    }
+
+    void moveCar(int m)
+    {
+        cout << "Choose your vehicle:" << endl;
+        cout << "1.\033[33m \\o=o>\033[0m" << endl;
+        cout << "2.\033[33m Lo=o>\033[0m" << endl;
+        cout << "3.\033[33m Co=o>\033[0m" << endl;
+        int n;
+        cout << "::> ";
+        cin >> n;
+        system("cls");
+        while (true)
+        {
+            Graph g(m); // Create a graph with m*m vertices
+            // ... Add edges to the graph ...
+
+            g.makeGrid(m);
+
+            if (g.bfs(g, 0, m * m - 1, m))
+            {
+                int carPos = 0; // The car starts at node 0
+                while (true)
+                {
+                    g.printCar(m, carPos, n);
+                    int key = _getch(); // Capture the arrow key input
+                    int newPos = carPos;
+                    if (key == 72) newPos -= m; // Up arrow key
+                    else if (key == 80) newPos += m; // Down arrow key
+                    else if (key == 75) newPos--; // Left arrow key
+                    else if (key == 77) newPos++; // Right arrow key
+                    // Check if the move is valid
+                    if (find(g.adjList[carPos].edges, g.adjList[carPos].edges + g.adjList[carPos].edgeCount, newPos) != g.adjList[carPos].edges + g.adjList[carPos].edgeCount)
+                    {
+                        carPos = newPos;
+                    }
+                    if (carPos == m * m - 1) // We reached the destination
+                    {
+                        // system("cls");
+                        g.printCar(m, carPos, n);
+                        cout << "You win!" << endl;
+                        break;
+                    }
+                }
+                break;
+            }
+        }
     }
 
     bool bfs(Graph& g, int source, int destination, int m) 
@@ -125,6 +203,51 @@ public:
                 else
                 {
                     cout << "\033[35m<^-^>\033[0m";
+                }
+                if (find(adjList[v].edges, adjList[v].edges + adjList[v].edgeCount, v + 1) != adjList[v].edges + adjList[v].edgeCount)
+                {
+                    cout << "\033[36m----\033[0m";
+                }
+                else
+                {
+                    cout << "    ";
+                }
+            }
+            cout << endl;
+            if (i < vertexCount - 1)
+            {
+                for (int j = 0; j < vertexCount; ++j)
+                {
+                    int v = i * vertexCount + j;
+                    if (find(adjList[v].edges, adjList[v].edges + adjList[v].edgeCount, v + vertexCount) != adjList[v].edges + adjList[v].edgeCount)
+                    {
+                        cout << "\033[36m  |      \033[0m";
+                    }
+                    else
+                    {
+                        cout << "         ";
+                    }
+                }
+                cout << endl;
+            }
+        }
+    }
+
+    void printCar(int n, int carPos, int m)
+    {
+        system("cls");
+        for (int i = 0; i < vertexCount; ++i)
+        {
+            for (int j = 0; j < vertexCount; ++j)
+            {
+                int v = i * vertexCount + j;
+                if (v == carPos)
+                {
+                    car(m); // Print the car
+                }
+                else
+                {
+                    cout << "\033[35m" << adjList[v].name << "\033[0m";
                 }
                 if (find(adjList[v].edges, adjList[v].edges + adjList[v].edgeCount, v + 1) != adjList[v].edges + adjList[v].edgeCount)
                 {
