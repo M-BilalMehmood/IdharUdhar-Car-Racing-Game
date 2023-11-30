@@ -8,6 +8,10 @@ using namespace std;
 
 int main()
 {
+    cout << "Choose your vehicle:" << endl;
+    cout << "1.\033[33m \\o=o>\033[0m" << endl;
+    cout << "2.\033[33m Lo=o>\033[0m" << endl;
+    cout << "3.\033[33m Co=o>\033[0m" << endl;
     while (1)
     {
         cout << "::>";
