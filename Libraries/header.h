@@ -51,6 +51,12 @@ public:
 
     void addEdge(int x1, int y1, int x2, int y2, int weight)
     {
+        if (x1 < 0 || x1 >= vertexCount || y1 < 0 || y1 >= vertexCount || x2 < 0 || x2 >= vertexCount || y2 < 0 || y2 >= vertexCount)
+		{
+			cout << "Invalid edge!\n";
+			return;
+		}
+
         int v = x1 * vertexCount + y1;
         int w = x2 * vertexCount + y2;
 
