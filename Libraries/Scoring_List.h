@@ -21,10 +21,9 @@ private:
 	Item* tail;
 
     static Collected_Items* instance;
+    //private contructor:
     Collected_Items() : head(nullptr), tail(nullptr) {}
 public:
-    Collected_Items() : head(nullptr), tail(nullptr) {}
-
     static Collected_Items* get_instance() {
         if (instance == nullptr) {
             instance = new Collected_Items();
@@ -32,16 +31,17 @@ public:
         return instance;
     }
 
+    //when called, the function will create a new node and add it to the end of the list.
     void add_item(string Item_Type, int Score_Value) {
         Item* new_item = new Item(Item_Type, Score_Value);
         if (head == nullptr) {
             head = tail = new_item;
+        } else {
+            tail->next = new_item;
+            new_item->prev = tail;
+            tail = new_item;
         }
-        else {
-            new_item->next = head;
-            head->prev = new_item;
-            head = new_item;
-        }
+        cout<<"Item added"<<endl;
     }
 
     void remove_item(bool remove_from_head) {
@@ -87,7 +87,7 @@ public:
         return total_score;
     }
 
-
+    
 
     ~Collected_Items() {
         while (head != nullptr) {
