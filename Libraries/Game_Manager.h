@@ -5,10 +5,11 @@
 #include <ctime>
 #include <conio.h>
 //#include "/Git Dev/DS-Project/DS-Project/Libraries/Queue.h"
-#include "Queue.h"
+#include "BFSQueue.h"
 using namespace std;
 
-struct Node
+
+struct BFSNode
 {
     string name;
     int vertex;
@@ -20,13 +21,13 @@ struct Node
 class Graph
 {
 private:
-    Node* adjList;
+    BFSNode* adjList;
     int vertexCount;
 
 public:
     Graph(int V) : vertexCount(V)
     {
-        adjList = new Node[V * V];
+        adjList = new BFSNode[V * V];
         for (int i = 0; i < V * V; ++i)
         {
             //the start and end node name should be <|S|>, <|E|>
@@ -162,7 +163,7 @@ public:
         bool* visited = new bool[m * m];
         for (int i = 0; i < m * m; i++) visited[i] = false;
         int n = m * m;
-        Queue q(n);
+        BFSQueue q(n);
         q.push(source);
         visited[source] = true;
         while (!q.empty()) 
