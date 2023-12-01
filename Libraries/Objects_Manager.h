@@ -3,7 +3,6 @@
 #include <ctime>
 using namespace std;
 
-
 //using factory design pattern for creating obstacles.
 class Object {
 public:
@@ -14,8 +13,8 @@ public:
 
 class Obstacle : public Object {
 public:
-	Obstacle(){
-		object_name = "/===\\";
+	Obstacle() {
+		object_name = "\033[31m/===\\\033[0m";
 	}
 	string Create_Object() override {
 		return object_name;
@@ -24,21 +23,21 @@ public:
 
 class Coin : public Object {
 public:
-	Coin(){
-		object_name = "{($)}";
+	Coin() {
+		object_name = "\033[32m>>$<<\033[0m";
 	}
 	string Create_Object() override {
-		return object_name; 
+		return object_name;
 	}
 };
 
 class Multiplier : public Object {
 public:
-	Multiplier(){
-		object_name = "{[*]}";
+	Multiplier() {
+		object_name = "\033[36m<{~}>\033[0m";
 	}
 	string Create_Object() override {
-		return object_name; 
+		return object_name;
 	}
 };
 

@@ -4,12 +4,14 @@
 #include <algorithm>
 #include <ctime>
 #include <conio.h>
+#include "../Libraries/Objects_Manager.h"
+#include "../Libraries/Queue.h"
+#include "../Libraries/BFSQueue.h"
 //#include "/Git Dev/DS-Project/DS-Project/Libraries/Queue.h"
-#include "BFSQueue.h"
 using namespace std;
 
 
-struct BFSNode
+struct GNode
 {
     string name;
     int vertex;
@@ -21,13 +23,16 @@ struct BFSNode
 class Graph
 {
 private:
-    BFSNode* adjList;
+    GNode* adjList;
+    Queue<Object*> objectQueue;
     int vertexCount;
+    int score = 0;
+    int objectCount = 0;
 
 public:
     Graph(int V) : vertexCount(V)
     {
-        adjList = new BFSNode[V * V];
+        adjList = new GNode[V * V];
         for (int i = 0; i < V * V; ++i)
         {
             //the start and end node name should be <|S|>, <|E|>
@@ -70,6 +75,26 @@ public:
         adjList[w].edgeCount++;
     }
 
+    void addObject(Object* obj) 
+    {
+        if (objectCount >= vertexCount * vertexCount - 2) 
+        {
+            // The grid is full, so don't try to add more objects
+            return;
+        }
+
+        int pos;
+        do 
+        {
+            pos = rand() % (vertexCount * vertexCount);
+        } 
+        while (pos == 0 || pos == vertexCount * vertexCount - 1 || adjList[pos].name != "<<+>>");
+
+        objectQueue.Push(obj);
+        adjList[pos].name = obj->Create_Object();
+        objectCount++;
+    }
+
     void makeGrid(int n)
     {
         srand(time(0));
@@ -77,22 +102,24 @@ public:
         {
             for (int j = 0; j < n; ++j)
             {
-                if (rand() % 10 < 6.5)  // 65% chance to add a horizontal edge
-                {
-                    if (j < n - 1)  // Don't add a horizontal edge for the last column
-                    {
-                        addEdge(i, j, i, j + 1, rand() % 10 + 1); // Random weight between 1 and 10
+                if (rand() % 10 < 6.5) { // 65% chance to add a horizontal edge
+                    if (j < n - 1) { // Don't add a horizontal edge for the last column
+                        addEdge(i, j, i, j + 1, rand() % 100 + 1); // Random weight between 1 and 100
                     }
                 }
-                if (rand() % 10 < 6.5) // 65% chance to add a vertical edge
-                {
-                    if (i < n - 1)  // Don't add a vertical edge for the last row
-                    {
-                        addEdge(i, j, i + 1, j, rand() % 10 + 1); // Random weight between 1 and 10
+                if (rand() % 10 < 6.5) { // 65% chance to add a vertical edge
+                    if (i < n - 1) { // Don't add a vertical edge for the last row
+                        addEdge(i, j, i + 1, j, rand() % 100 + 1); // Random weight between 1 and 100
                     }
                 }
             }
         }
+        Object_Factory factory;
+        int numObjects = n * n / 2; // Calculate the number of objects
+        for (int i = 0; i < numObjects; ++i) {
+            addObject(factory.Create_Object(rand() % 3 + 1)); // Add a random object to the grid
+        }
+        //print(n);
     }
 
     void car(int n)
@@ -250,6 +277,23 @@ public:
                 int v = i * vertexCount + j;
                 if (v == carPos)
                 {
+                    if (adjList[v].name == "\033[32m>>$<<\033[0m")
+                    {
+                        adjList[v].name = "<<+>>";
+                        score += 10;
+                    }
+                    else if (adjList[v].name == "\033[36m<{~}>\033[0m")
+                    {
+                        if (score > 0)
+                        {
+                            adjList[v].name = "<<+>>";
+                            score *= 2;
+                        }
+                    }
+                    else if (adjList[v].name == "\033[31m/===\\\033[0m")
+                    {
+                        score -= 10;
+                    }
                     car(m); // Print the car
                 }
                 else
@@ -258,7 +302,7 @@ public:
                 }
                 if (find(adjList[v].edges, adjList[v].edges + adjList[v].edgeCount, v + 1) != adjList[v].edges + adjList[v].edgeCount)
                 {
-                    cout << "\033[36m----\033[0m";
+                    cout << "\033[37m----\033[0m";
                 }
                 else
                 {
@@ -273,7 +317,7 @@ public:
                     int v = i * vertexCount + j;
                     if (find(adjList[v].edges, adjList[v].edges + adjList[v].edgeCount, v + vertexCount) != adjList[v].edges + adjList[v].edgeCount)
                     {
-                        cout << "\033[36m  |      \033[0m";
+                        cout << "\033[37m  |      \033[0m";
                     }
                     else
                     {
@@ -283,6 +327,7 @@ public:
                 cout << endl;
             }
         }
+        cout << "Score: " << score << endl;
     }
 
     ~Graph()
