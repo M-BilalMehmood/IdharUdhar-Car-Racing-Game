@@ -4,11 +4,15 @@
 #include <algorithm>
 #include <ctime>
 #include <conio.h>
-//#include "/Git Dev/DS-Project/DS-Project/Libraries/Queue.h"
-#include "Queue.h"
+#include <windows.h>
+#include "../Libraries/Stack.h"
+#include "../Libraries/PriorityQueue.h"
+#include "../Libraries/Objects_Manager.h"
+#include "../Libraries/Queue.h"
+#include "../Libraries/BFSQueue.h"
 using namespace std;
 
-struct Node
+struct AutoCarGraphNode
 {
     string name;
     int vertex;
@@ -17,19 +21,21 @@ struct Node
     int edgeCount;
 };
 
-class Graph
+class AutoCarGraph
 {
 private:
-    Node* adjList;
+    AutoCarGraphNode* adjList;
+    //Queue<Object*> objectQueue;
     int vertexCount;
+    int score = 0;
+    int objectCount = 0;
 
 public:
-    Graph(int V) : vertexCount(V)
+    AutoCarGraph(int V) : vertexCount(V)
     {
-        adjList = new Node[V * V];
+        adjList = new AutoCarGraphNode[V * V];
         for (int i = 0; i < V * V; ++i)
         {
-            //the start and end node name should be <|S|>, <|E|>
             if (i == 0)
             {
                 adjList[i].name = "<\033[32m|S|\033[35m>";
@@ -52,10 +58,10 @@ public:
     void addEdge(int x1, int y1, int x2, int y2, int weight)
     {
         if (x1 < 0 || x1 >= vertexCount || y1 < 0 || y1 >= vertexCount || x2 < 0 || x2 >= vertexCount || y2 < 0 || y2 >= vertexCount)
-		{
-			cout << "Invalid edge!\n";
-			return;
-		}
+        {
+            cout << "Invalid edge!\n";
+            return;
+        }
 
         int v = x1 * vertexCount + y1;
         int w = x2 * vertexCount + y2;
@@ -76,28 +82,16 @@ public:
         {
             for (int j = 0; j < n; ++j)
             {
-<<<<<<< Updated upstream:Libraries/header.h
-                if (rand() % 10 < 6.5)  // 65% chance to add a horizontal edge
-                {
-                    if (j < n - 1)  // Don't add a horizontal edge for the last column
-                    {
-=======
                 if (rand() % 10 < 6.5) // 65% chance to add a horizontal edge
-                { 
+                {
                     if (j < n - 1) // Don't add a horizontal edge for the last column
-                    { 
->>>>>>> Stashed changes:Libraries/Game_Manager.h
+                    {
                         addEdge(i, j, i, j + 1, rand() % 10 + 1); // Random weight between 1 and 10
                     }
                 }
                 if (rand() % 10 < 6.5) // 65% chance to add a vertical edge
-<<<<<<< Updated upstream:Libraries/header.h
                 {
-                    if (i < n - 1)  // Don't add a vertical edge for the last row
-=======
-                { 
                     if (i < n - 1) // Don't add a vertical edge for the last row
->>>>>>> Stashed changes:Libraries/Game_Manager.h
                     {
                         addEdge(i, j, i + 1, j, rand() % 10 + 1); // Random weight between 1 and 10
                     }
@@ -132,64 +126,112 @@ public:
         cout << "::> ";
         cin >> n;
         system("cls");
-        while (true)
+
+        AutoCarGraph g(m); // Create a graph with m*m vertices
+        makeGrid(m);
+
+        // Run BFS to ensure there's at least one path from start to end
+        if (!bfs(0, m * m - 1, m))
         {
-            Graph g(m); // Create a graph with m*m vertices
-            // ... Add edges to the graph ...
+            cout << "No path found from start to end. Exiting..." << endl;
+            return;
+        }
 
-            g.makeGrid(m);
+        int* distances = new int[m * m];
+        int* previous = new int[m * m];
+        dijkstra(0, m * m - 1, distances, previous);
 
-            if (g.bfs(g, 0, m * m - 1, m))
+        if (distances[m * m - 1] != INT_MAX) {
+            moveCarAutomatically(0, m * m - 1, previous, m, n);
+            cout << "You win!" << endl;
+        }
+        else
+        {
+            cout << "No path found from start to end. Exiting..." << endl;
+        }
+
+        delete[] distances;
+        delete[] previous;
+    }
+
+    void moveCarAutomatically(int start, int end, int* previous, int m, int n)
+    {
+        // Use a stack to reverse the path from end to start
+        Stack path;
+        for (int node = end; node != start; node = previous[node])
+        {
+            path.push(node);
+        }
+        path.push(start); // Don't forget to add the start node
+
+        // Move the car along the path
+        while (!path.isEmpty())
+        {
+            int node = path.peek();
+            path.pop();
+            this->printCar(m, node, n);
+            Sleep(1200);
+        }
+    }
+
+    void dijkstra(int start, int end, int* distances, int* previous)
+    {
+        PriorityQueue queue(this->vertexCount * this->vertexCount);
+        for (int i = 0; i < this->vertexCount * this->vertexCount; ++i)
+        {
+            if (i == start)
             {
-                int carPos = 0; // The car starts at node 0
-                while (true)
+                distances[i] = 0;
+            }
+            else
+            {
+                distances[i] = INT_MAX;
+            }
+            previous[i] = -1;
+            queue.push(i, distances[i]);
+        }
+        while (!queue.empty())
+        {
+            int node = queue.pop();
+            for (int i = 0; i < this->adjList[node].edgeCount; ++i)
+            {
+                int neighbor = this->adjList[node].edges[i];
+                int altDist = distances[node] + this->adjList[node].weights[i];
+                if (altDist < distances[neighbor])
                 {
-                    g.printCar(m, carPos, n);
-                    int key = _getch(); // Capture the arrow key input
-                    int newPos = carPos;
-                    if (key == 72) newPos -= m; // Up arrow key
-                    else if (key == 80) newPos += m; // Down arrow key
-                    else if (key == 75) newPos--; // Left arrow key
-                    else if (key == 77) newPos++; // Right arrow key
-                    // Check if the move is valid
-                    if (find(g.adjList[carPos].edges, g.adjList[carPos].edges + g.adjList[carPos].edgeCount, newPos) != g.adjList[carPos].edges + g.adjList[carPos].edgeCount)
+                    int altDist = distances[node] + this->adjList[node].weights[i];
+                    if (altDist < distances[neighbor])
                     {
-                        carPos = newPos;
-                    }
-                    if (carPos == m * m - 1) // We reached the destination
-                    {
-                        // system("cls");
-                        g.printCar(m, carPos, n);
-                        cout << "You win!" << endl;
-                        break;
+                        distances[neighbor] = altDist;
+                        previous[neighbor] = node;
+                        queue.push(neighbor, altDist);
                     }
                 }
-                break;
             }
         }
     }
 
-    bool bfs(Graph& g, int source, int destination, int m) 
+    bool bfs(int source, int destination, int m)
     {
         bool* visited = new bool[m * m];
         for (int i = 0; i < m * m; i++) visited[i] = false;
         int n = m * m;
-        Queue q(n);
+        BFSQueue q(n);
         q.push(source);
         visited[source] = true;
-        while (!q.empty()) 
+        while (!q.empty())
         {
             int u = q.peek();
             q.pop();
-            if (u == destination) 
+            if (u == destination)
             {
                 delete[] visited;
                 return true; // We found a path to the destination
             }
-            for (int i = 0; i < g.adjList[u].edgeCount; i++) 
+            for (int i = 0; i < adjList[u].edgeCount; i++)
             {
-                int v = g.adjList[u].edges[i];
-                if (!visited[v]) 
+                int v = adjList[u].edges[i];
+                if (!visited[v])
                 {
                     visited[v] = true;
                     q.push(v);
@@ -261,6 +303,11 @@ public:
                 int v = i * vertexCount + j;
                 if (v == carPos)
                 {
+                    if (adjList[v].name == "<<+>>")
+                    {
+                        adjList[v].name = "\033[32m<<+>>\033[0m";
+                        score += 1;
+                    }
                     car(m); // Print the car
                 }
                 else
@@ -269,7 +316,7 @@ public:
                 }
                 if (find(adjList[v].edges, adjList[v].edges + adjList[v].edgeCount, v + 1) != adjList[v].edges + adjList[v].edgeCount)
                 {
-                    cout << "\033[36m----\033[0m";
+                    cout << "\033[37m----\033[0m";
                 }
                 else
                 {
@@ -284,7 +331,7 @@ public:
                     int v = i * vertexCount + j;
                     if (find(adjList[v].edges, adjList[v].edges + adjList[v].edgeCount, v + vertexCount) != adjList[v].edges + adjList[v].edgeCount)
                     {
-                        cout << "\033[36m  |      \033[0m";
+                        cout << "\033[37m  |      \033[0m";
                     }
                     else
                     {
@@ -294,9 +341,10 @@ public:
                 cout << endl;
             }
         }
+        cout << "Nodes: " << score << endl;
     }
 
-    ~Graph()
+    ~AutoCarGraph()
     {
         for (int i = 0; i < vertexCount * vertexCount; ++i)
         {
