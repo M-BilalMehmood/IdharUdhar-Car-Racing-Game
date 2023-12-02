@@ -4,7 +4,8 @@
 
 //#include"/Git Dev/DS-Project/DS-Project/Libraries/header.h"
 //#include"/Git Dev/DS-Project/Libraries/header.h"
-#include"../Libraries/Game_Manager.h"
+#include "../Libraries/AutomaticCar_GameManager.h"
+#include "../Libraries/Game_Manager.h"
 
 
 //#include"header.h"
@@ -14,11 +15,28 @@ using namespace std;
 
 int main()
 {
-    int m;
-    cout << "Enter the size of the grid: ";
-    cin >> m;
-    Graph g(m);
-    g.moveCar(m);
+    cout << "Mode: " << endl;
+    cout << "1. Manual" << endl;
+    cout << "2. Automatic" << endl;
+    cout << "::> ";
+    int mode;
+    cin >> mode;
+    if (mode == 1)
+    {
+        cout << "Enter the size of the grid: ";
+        int m;
+        cin >> m;
+        Graph g(m);
+        g.moveCar(m);
+    }
+    else
+    {
+        cout << "Enter the size of the grid: ";
+        int m;
+        cin >> m;
+        AutoCarGraph g(m);
+        g.moveCar(m);
+    }
     return 0;
 }
 
