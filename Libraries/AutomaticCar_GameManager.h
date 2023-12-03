@@ -11,7 +11,9 @@
 #include "../Libraries/Queue.h"
 #include "../Libraries/BFSQueue.h"
 using namespace std;
-#pragma comment(lib, "winmm.lib")
+
+//MUSIC COMMENT #1
+// #pragma comment(lib, "winmm.lib")
 
 struct AutoCarGraphNode
 {
@@ -126,7 +128,8 @@ public:
         int n;
         cout << "::> ";
         cin >> n;
-        PlaySound(TEXT("WhileGamming.wav"), NULL, SND_ASYNC | SND_LOOP);
+        //MUSIC COMMENT #2
+        // PlaySound(TEXT("WhileGamming.wav"), NULL, SND_ASYNC | SND_LOOP);
         system("cls");
 
         AutoCarGraph g(m); // Create a graph with m*m vertices

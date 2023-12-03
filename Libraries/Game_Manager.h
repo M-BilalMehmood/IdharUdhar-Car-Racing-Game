@@ -10,7 +10,9 @@
 #include "../Libraries/BFSQueue.h"
 //#include "/Git Dev/DS-Project/DS-Project/Libraries/Queue.h"
 using namespace std;
-#pragma comment(lib, "winmm.lib")
+
+//MUSIC COMMENT #1
+// #pragma comment(lib, "winmm.lib")
 
 struct GNode
 {
@@ -148,7 +150,8 @@ public:
         int n;
         cout << "::> ";
         cin >> n;
-        PlaySound(TEXT("WhileGamming.wav"), NULL, SND_ASYNC | SND_LOOP);
+        //MUSIC COMMENT #2
+        // PlaySound(TEXT("WhileGamming.wav"), NULL, SND_ASYNC | SND_LOOP);
         system("cls");
         while (true)
         {
@@ -373,7 +376,8 @@ public:
 
     void printYouWon()
     {
-        PlaySound(TEXT("WIN.wav"), NULL, SND_ASYNC | SND_LOOP);
+        //MUSIC COMMENT #3
+        // PlaySound(TEXT("WIN.wav"), NULL, SND_ASYNC | SND_LOOP);
         CONSOLE_SCREEN_BUFFER_INFO csbi;
         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
         int width = csbi.srWindow.Right - csbi.srWindow.Left + 1;

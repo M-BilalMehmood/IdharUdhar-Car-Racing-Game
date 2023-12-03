@@ -8,7 +8,8 @@
 #include "../Libraries/Game_Manager.h"
 #include <Windows.h>
 
-#pragma comment(lib, "winmm.lib")
+//MUSIC COMMENT #1
+// #pragma comment(lib, "winmm.lib") 
 
 //#include"header.h"
 using namespace std;
@@ -100,8 +101,9 @@ void printStartNewGame(int selectedOption)
 
 
 int main()
-{
-    PlaySound(TEXT("LOBBY.wav"), NULL, SND_ASYNC | SND_LOOP);
+{   
+    //MUSIC COMMENT #2
+    // PlaySound(TEXT("LOBBY.wav"), NULL, SND_ASYNC | SND_LOOP);
     int selectedOption = 0;
     int selectedOption1 = 0;
     int menukey;
