@@ -141,7 +141,6 @@ public:
 
     void moveCar(int m)
     {
-        PlaySound(TEXT("WhileGamming.wav"), NULL, SND_ASYNC | SND_LOOP);
         cout << "Choose your vehicle:" << endl;
         cout << "1.\033[33m \\o=o>\033[0m" << endl;
         cout << "2.\033[33m Lo=o>\033[0m" << endl;
@@ -149,6 +148,7 @@ public:
         int n;
         cout << "::> ";
         cin >> n;
+        PlaySound(TEXT("WhileGamming.wav"), NULL, SND_ASYNC | SND_LOOP);
         system("cls");
         while (true)
         {

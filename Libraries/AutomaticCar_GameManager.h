@@ -11,6 +11,7 @@
 #include "../Libraries/Queue.h"
 #include "../Libraries/BFSQueue.h"
 using namespace std;
+#pragma comment(lib, "winmm.lib")
 
 struct AutoCarGraphNode
 {
@@ -125,6 +126,7 @@ public:
         int n;
         cout << "::> ";
         cin >> n;
+        PlaySound(TEXT("WhileGamming.wav"), NULL, SND_ASYNC | SND_LOOP);
         system("cls");
 
         AutoCarGraph g(m); // Create a graph with m*m vertices
@@ -296,8 +298,27 @@ public:
     void printCar(int n, int carPos, int m)
     {
         system("cls");
+
+        // Get the console size
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+        int width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        int Scorewidth = csbi.srWindow.Right - (csbi.srWindow.Left / 2) + 1;
+        int height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+        int newlines = (height - vertexCount * 2) / 2;
+        // Print the newlines
+        cout << string(newlines, '\n');
+
+        cout << string((Scorewidth + 70) / 2, ' ') << "Nodes: " << score << endl;
+
         for (int i = 0; i < vertexCount; ++i)
         {
+            // Calculate the number of spaces needed to center the grid
+            int spaces = (width - vertexCount * 8) / 2;
+            // Print the spaces
+            cout << string(spaces, ' ');
+
             for (int j = 0; j < vertexCount; ++j)
             {
                 int v = i * vertexCount + j;
@@ -326,6 +347,9 @@ public:
             cout << endl;
             if (i < vertexCount - 1)
             {
+                // Print the spaces
+                cout << string(spaces, ' ');
+
                 for (int j = 0; j < vertexCount; ++j)
                 {
                     int v = i * vertexCount + j;
@@ -341,7 +365,6 @@ public:
                 cout << endl;
             }
         }
-        cout << "Nodes: " << score << endl;
     }
 
     ~AutoCarGraph()
