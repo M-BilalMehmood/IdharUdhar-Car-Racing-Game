@@ -4,12 +4,13 @@
 #include <algorithm>
 #include <ctime>
 #include <conio.h>
+#include <Windows.h>
 #include "../Libraries/Objects_Manager.h"
 #include "../Libraries/Queue.h"
 #include "../Libraries/BFSQueue.h"
 //#include "/Git Dev/DS-Project/DS-Project/Libraries/Queue.h"
 using namespace std;
-
+#pragma comment(lib, "winmm.lib")
 
 struct GNode
 {
@@ -140,6 +141,7 @@ public:
 
     void moveCar(int m)
     {
+        PlaySound(TEXT("WhileGamming.wav"), NULL, SND_ASYNC | SND_LOOP);
         cout << "Choose your vehicle:" << endl;
         cout << "1.\033[33m \\o=o>\033[0m" << endl;
         cout << "2.\033[33m Lo=o>\033[0m" << endl;
@@ -176,7 +178,9 @@ public:
                     {
                         // system("cls");
                         g.printCar(m, carPos, n);
-                        cout << "You win!" << endl;
+                        printYouWon();
+                        system("cls");
+                        DisplayScore();
                         break;
                     }
                 }
@@ -214,6 +218,22 @@ public:
         }
         delete[] visited;
         return false; // No path found to the destination
+    }
+
+    void DisplayScore()
+    {
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+        int width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        int height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+        int newlines = (height - vertexCount * 2) / 2;
+        // Print the newlines
+        cout << string(newlines, '\n');
+
+        string yourscore = "Your Score is: ";
+
+        cout << string((width - 19) / 2, ' ') << "Your Score is: " << score << endl;
     }
 
     void print(int n)
@@ -270,8 +290,27 @@ public:
     void printCar(int n, int carPos, int m)
     {
         system("cls");
+
+        // Get the console size
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+        int width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        int Scorewidth = csbi.srWindow.Right - (csbi.srWindow.Left / 2) + 1;
+        int height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+        int newlines = (height - vertexCount * 2) / 2;
+        // Print the newlines
+        cout << string(newlines, '\n');
+
+        cout << string((Scorewidth + 70) / 2, ' ') << "Score: " << score << endl;
+
         for (int i = 0; i < vertexCount; ++i)
         {
+            // Calculate the number of spaces needed to center the grid
+            int spaces = (width - vertexCount * 8) / 2;
+            // Print the spaces
+            cout << string(spaces, ' ');
+
             for (int j = 0; j < vertexCount; ++j)
             {
                 int v = i * vertexCount + j;
@@ -312,6 +351,9 @@ public:
             cout << endl;
             if (i < vertexCount - 1)
             {
+                // Print the spaces
+                cout << string(spaces, ' ');
+
                 for (int j = 0; j < vertexCount; ++j)
                 {
                     int v = i * vertexCount + j;
@@ -327,7 +369,69 @@ public:
                 cout << endl;
             }
         }
-        cout << "Score: " << score << endl;
+    }
+
+    void printYouWon()
+    {
+        PlaySound(TEXT("WIN.wav"), NULL, SND_ASYNC | SND_LOOP);
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+        int width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        int height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+        int newlines = (height - 18) / 2;
+        // Print the newlines
+
+        for (int i = 0; i < 2; i++)
+        {
+            // Print "YOU WON"
+            system("cls");
+            //cout << endl << endl << endl << endl << endl << endl << endl << endl << endl << endl ;
+            cout << string(newlines, '\n');
+            cout << string((width - 81) / 2, ' ') << "\033[34m___        ___   ________    __      __      __        __    ________    __       __ " << endl;
+            cout << string((width - 81) / 2, ' ') << "\\  \\      /  /  /   __   \\  |  |    |  |    |  |      |  |  /   __   \\  |  \\     |  |" << endl;
+            cout << string((width - 81) / 2, ' ') << " \\  \\    /  /  |   /  \\   | |  |    |  |    |  |      |  | |   /  \\   | |   \\    |  |" << endl;
+            cout << string((width - 81) / 2, ' ') << "  \\  \\__/  /   |  |    |  | |  |    |  |    |  |      |  | |  |    |  | |    \\   |  |" << endl;
+            cout << string((width - 81) / 2, ' ') << "   \\      /    |  |    |  | |  |    |  |    |  |  __  |  | |  |    |  | |     \\__|  |" << endl;
+            cout << string((width - 81) / 2, ' ') << "    \\    /     |  |    |  | |  |    |  |    |  |_/  \\_|  | |  |    |  | |           |" << endl;
+            cout << string((width - 81) / 2, ' ') << "     |  |      |  |    |  | |  |    |  |    |            | |  |    |  | |   __      |" << endl;
+            cout << string((width - 81) / 2, ' ') << "     |  |      |  |    |  | |  |    |  |    |     __     | |  |    |  | |  |  \\     |" << endl;
+            cout << string((width - 81) / 2, ' ') << "     |  |      |  |    |  | |  |    |  |    |    /  \\    | |  |    |  | |  |   \\    |" << endl;
+            cout << string((width - 81) / 2, ' ') << "     |  |      |   \\__/   | |   \\__/   |    |   /    \\   | |   \\__/   | |  |    \\   |" << endl;
+            cout << string((width - 81) / 2, ' ') << "     |__|       \\________/   \\________/     |__/      \\__|  \\________/  |__|     \\__|" << endl;
+
+            Sleep(500);
+            system("cls");
+            cout << string(newlines, '\n');
+            cout << string((width - 81) / 2, ' ') << "\033[36m___        ___   ________    __      __      __        __    ________    __       __ " << endl;
+            cout << string((width - 81) / 2, ' ') << "\\  \\      /  /  /   __   \\  |  |    |  |    |  |      |  |  /   __   \\  |  \\     |  |" << endl;
+            cout << string((width - 81) / 2, ' ') << " \\  \\    /  /  |   /  \\   | |  |    |  |    |  |      |  | |   /  \\   | |   \\    |  |" << endl;
+            cout << string((width - 81) / 2, ' ') << "  \\  \\__/  /   |  |    |  | |  |    |  |    |  |      |  | |  |    |  | |    \\   |  |" << endl;
+            cout << string((width - 81) / 2, ' ') << "   \\      /    |  |    |  | |  |    |  |    |  |  __  |  | |  |    |  | |     \\__|  |" << endl;
+            cout << string((width - 81) / 2, ' ') << "    \\    /     |  |    |  | |  |    |  |    |  |_/  \\_|  | |  |    |  | |           |" << endl;
+            cout << string((width - 81) / 2, ' ') << "     |  |      |  |    |  | |  |    |  |    |            | |  |    |  | |   __      |" << endl;
+            cout << string((width - 81) / 2, ' ') << "     |  |      |  |    |  | |  |    |  |    |     __     | |  |    |  | |  |  \\     |" << endl;
+            cout << string((width - 81) / 2, ' ') << "     |  |      |  |    |  | |  |    |  |    |    /  \\    | |  |    |  | |  |   \\    |" << endl;
+            cout << string((width - 81) / 2, ' ') << "     |  |      |   \\__/   | |   \\__/   |    |   /    \\   | |   \\__/   | |  |    \\   |" << endl;
+            cout << string((width - 81) / 2, ' ') << "     |__|       \\________/   \\________/     |__/      \\__|  \\________/  |__|     \\__|" << endl;
+
+            Sleep(500);
+            system("cls");
+            cout << string(newlines, '\n');
+            cout << string((width - 81) / 2, ' ') << "\033[35m___        ___   ________    __      __      __        __    ________    __       __ " << endl;
+            cout << string((width - 81) / 2, ' ') << "\\  \\      /  /  /   __   \\  |  |    |  |    |  |      |  |  /   __   \\  |  \\     |  |" << endl;
+            cout << string((width - 81) / 2, ' ') << " \\  \\    /  /  |   /  \\   | |  |    |  |    |  |      |  | |   /  \\   | |   \\    |  |" << endl;
+            cout << string((width - 81) / 2, ' ') << "  \\  \\__/  /   |  |    |  | |  |    |  |    |  |      |  | |  |    |  | |    \\   |  |" << endl;
+            cout << string((width - 81) / 2, ' ') << "   \\      /    |  |    |  | |  |    |  |    |  |  __  |  | |  |    |  | |     \\__|  |" << endl;
+            cout << string((width - 81) / 2, ' ') << "    \\    /     |  |    |  | |  |    |  |    |  |_/  \\_|  | |  |    |  | |           |" << endl;
+            cout << string((width - 81) / 2, ' ') << "     |  |      |  |    |  | |  |    |  |    |            | |  |    |  | |   __      |" << endl;
+            cout << string((width - 81) / 2, ' ') << "     |  |      |  |    |  | |  |    |  |    |     __     | |  |    |  | |  |  \\     |" << endl;
+            cout << string((width - 81) / 2, ' ') << "     |  |      |  |    |  | |  |    |  |    |    /  \\    | |  |    |  | |  |   \\    |" << endl;
+            cout << string((width - 81) / 2, ' ') << "     |  |      |   \\__/   | |   \\__/   |    |   /    \\   | |   \\__/   | |  |    \\   |" << endl;
+            cout << string((width - 81) / 2, ' ') << "     |__|       \\________/   \\________/     |__/      \\__|  \\________/  |__|     \\__|" << endl;
+
+            cout << "\033[0m" << endl;
+            Sleep(500);
+        }
     }
 
     ~Graph()
