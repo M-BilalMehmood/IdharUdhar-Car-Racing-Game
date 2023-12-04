@@ -6,7 +6,7 @@
 #include <conio.h>
 #include <Windows.h>
 #include "../Libraries/Objects_Manager.h"
-#include "../Libraries/Queue.h"
+#include "../Libraries/Templatized_Queue.h"
 #include "../Libraries/BFSQueue.h"
 //#include "/Git Dev/DS-Project/DS-Project/Libraries/Queue.h"
 using namespace std;

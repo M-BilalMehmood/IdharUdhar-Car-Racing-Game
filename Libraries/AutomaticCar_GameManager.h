@@ -8,7 +8,7 @@
 #include "../Libraries/Stack.h"
 #include "../Libraries/PriorityQueue.h"
 #include "../Libraries/Objects_Manager.h"
-#include "../Libraries/Queue.h"
+#include "../Libraries/Templatized_Queue.h"
 #include "../Libraries/BFSQueue.h"
 using namespace std;
 
