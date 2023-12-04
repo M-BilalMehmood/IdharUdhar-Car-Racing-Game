@@ -41,7 +41,7 @@ public:
             new_item->prev = tail;
             tail = new_item;
         }
-        cout<<"Item added"<<endl;
+        // cout<<"Item added"<<endl;
     }
 
     void remove_item(bool remove_from_head) {
@@ -151,10 +151,11 @@ public:
                     return true;
                 }
             }
-            cout<<"Player name not found. Please try again."<<endl;
+            cout<<(attempts+1)<<" wrong attempt(s), Please try again :"<<endl;
+            cin>>player_name;
             attempts++;
             if (attempts == 3) {
-                cout<<"You have exceeded the maximum number of attempts. Re-directing to PLAYER SELECT"<<endl;
+                cout<<"You have exceeded the maximum number of attempts. Re-directing to PLAYER MENU"<<endl;
                 file.close();
                 return false;
             }
@@ -163,44 +164,46 @@ public:
 
 
     void update_player_record(string player_name){
-        string line;
-        ifstream I_file;
-        I_file.open("../Source/Player Records.txt");
-        if (!I_file) {
-            cout << "Error opening file" << endl;
-            return;
-        }
-        ofstream O_file;
-        O_file.open("../Source/temp.txt");
-        if (!O_file) {
-            cout << "Error opening file" << endl;
-            return;
-        }
-        //assuming no errors in opening the files,
-        while (getline(I_file,line)){
-            stringstream ss(line);
-            string name;
-            int score, coin_count, multiplier_count, obstacle_count;
-            ss>>name>>score>>coin_count>>multiplier_count>>obstacle_count;
-            if (name == player_name) {
-                O_file<<name<<" "<<get_total_score()<<" "<<get_coin_count()<<" "<<get_multiplier_count()<<" "<<get_obstacle_count()<<endl;
+        if (check_if_player_exists(player_name) == true){
+            string line;
+            ifstream I_file;
+            I_file.open("../Source/Player Records.txt");
+            if (!I_file) {
+                cout << "Error opening file" << endl;
+                return;
             }
-            else {
-                O_file<<name<<" "<<score<<" "<<coin_count<<" "<<multiplier_count<<" "<<obstacle_count<<endl;
+            ofstream O_file;
+            O_file.open("../Source/temp.txt");
+            if (!O_file) {
+                cout << "Error opening file" << endl;
+                return;
             }
-        }
-        I_file.close(); //closing the input file
-        O_file.close(); //closing the output file
-        //deleting the input file
-        if (remove("../Source/Player Records.txt") != 0) {
-            cout<<"Error deleting file"<<endl;
-            return;
-        }
-        //renaming the output file to the input file
-        if (rename("../Source/temp.txt", "../Source/Player Records.txt") != 0) {
-            cout<<"Error renaming file"<<endl;
-            return;
-        }
+            //assuming no errors in opening the files,
+            while (getline(I_file,line)){
+                stringstream ss(line);
+                string name;
+                int score, coin_count, multiplier_count, obstacle_count;
+                ss>>name>>score>>coin_count>>multiplier_count>>obstacle_count;
+                if (name == player_name) {
+                    O_file<<name<<" "<<get_total_score()<<" "<<get_coin_count()<<" "<<get_multiplier_count()<<" "<<get_obstacle_count()<<endl;
+                }
+                else {
+                    O_file<<name<<" "<<score<<" "<<coin_count<<" "<<multiplier_count<<" "<<obstacle_count<<endl;
+                }
+            }
+            I_file.close(); //closing the input file
+            O_file.close(); //closing the output file
+            //deleting the input file
+            if (remove("../Source/Player Records.txt") != 0) {
+                cout<<"Error deleting file"<<endl;
+                return;
+            }
+            //renaming the output file to the input file
+            if (rename("../Source/temp.txt", "../Source/Player Records.txt") != 0) {
+                cout<<"Error renaming file"<<endl;
+                return;
+            }
+        }        
     }
 
     void print_items() {

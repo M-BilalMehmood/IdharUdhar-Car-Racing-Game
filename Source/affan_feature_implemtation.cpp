@@ -26,4 +26,40 @@ void helper_function(){
         Collected_Items::get_instance()->add_item(object->object_name, object->object_value);
     }
 
+    cout << "Total Score: " << Collected_Items::get_instance()->get_total_score() << endl;
+    cout<<"coins collected: "<<Collected_Items::get_instance()->get_coin_count()<<endl;
+    cout<<"multiplier collected : "<<Collected_Items::get_instance()->get_multiplier_count()<<endl;
+    cout<<"obstacles hit : "<<Collected_Items::get_instance()->get_obstacle_count()<<endl;
+
+    system("pause");
+    system("cls");
+
+    int choice_1;
+    string name;
+    cout<<"How would you like to continue?"<<endl;
+    cout<<"[1] New Player"<<endl;
+    cout<<"[2] Continue"<<endl;
+    cout<<"[3] Exit"<<endl;
+    cin>>choice_1;
+
+    switch(choice_1){
+        case 1:
+            cout<<"Enter player name :";
+            cin>>name;
+            Collected_Items::get_instance()->new_player_record(name);
+            break;
+        case 2:
+            cout<<"Player Name : ";
+            cin>>name;
+            Collected_Items::get_instance()->update_player_record(name);
+            break;
+        case 3:
+            cout<<"Exiting..."<<endl;
+            exit(0);
+            break;
+        default:
+            cout<<"Invalid Input"<<endl;
+            break;
+    }
+    
 }
