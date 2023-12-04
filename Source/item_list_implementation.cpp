@@ -2,7 +2,7 @@
 #include <ctime>
 #include "../Libraries/Objects_Manager.h"
 #include "../Libraries/Scoring_List.h"
-#include "../Libraries/Queue.h"
+#include "../Libraries/Templatized_Queue.h"
 
 using namespace std;
 

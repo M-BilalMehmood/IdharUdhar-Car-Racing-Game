@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <sstream>
 using namespace std;
 
 
@@ -161,8 +162,46 @@ public:
     }
 
 
-    
-
+    void update_player_record(string player_name){
+        string line;
+        ifstream I_file;
+        I_file.open("../Source/Player Records.txt");
+        if (!I_file) {
+            cout << "Error opening file" << endl;
+            return;
+        }
+        ofstream O_file;
+        O_file.open("../Source/temp.txt");
+        if (!O_file) {
+            cout << "Error opening file" << endl;
+            return;
+        }
+        //assuming no errors in opening the files,
+        while (getline(I_file,line)){
+            stringstream ss(line);
+            string name;
+            int score, coin_count, multiplier_count, obstacle_count;
+            ss>>name>>score>>coin_count>>multiplier_count>>obstacle_count;
+            if (name == player_name) {
+                O_file<<name<<" "<<get_total_score()<<" "<<get_coin_count()<<" "<<get_multiplier_count()<<" "<<get_obstacle_count()<<endl;
+            }
+            else {
+                O_file<<name<<" "<<score<<" "<<coin_count<<" "<<multiplier_count<<" "<<obstacle_count<<endl;
+            }
+        }
+        I_file.close(); //closing the input file
+        O_file.close(); //closing the output file
+        //deleting the input file
+        if (remove("../Source/Player Records.txt") != 0) {
+            cout<<"Error deleting file"<<endl;
+            return;
+        }
+        //renaming the output file to the input file
+        if (rename("../Source/temp.txt", "../Source/Player Records.txt") != 0) {
+            cout<<"Error renaming file"<<endl;
+            return;
+        }
+    }
 
     void print_items() {
         Item* temp = head;
