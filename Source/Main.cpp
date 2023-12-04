@@ -106,69 +106,69 @@ void printStartNewGame(int selectedOption)
 
 int main()
 {   
-    // //MUSIC COMMENT #2
-    // // PlaySound(TEXT("LOBBY.wav"), NULL, SND_ASYNC | SND_LOOP);
-    // int selectedOption = 0;
-    // int selectedOption1 = 0;
-    // int menukey;
-    // while (true)
-    // {
-    //     system("cls");
-    //     printMenu(selectedOption);
+    //MUSIC COMMENT #2
+    // PlaySound(TEXT("LOBBY.wav"), NULL, SND_ASYNC | SND_LOOP);
+    int selectedOption = 0;
+    int selectedOption1 = 0;
+    int menukey;
+    while (true)
+    {
+        system("cls");
+        printMenu(selectedOption);
 
-    //     int key = _getch(); // Capture the arrow key input
-    //     if (key == 72) selectedOption = (selectedOption - 1 + 4) % 4; // Up arrow key
-    //     else if (key == 80) selectedOption = (selectedOption + 1) % 4; // Down arrow key
-    //     else if (key == 13) break; // Enter key
-    // }
+        int key = _getch(); // Capture the arrow key input
+        if (key == 72) selectedOption = (selectedOption - 1 + 4) % 4; // Up arrow key
+        else if (key == 80) selectedOption = (selectedOption + 1) % 4; // Down arrow key
+        else if (key == 13) break; // Enter key
+    }
 
-    // // Now selectedOption contains the index of the selected menu option
-    // // You can use a switch statement to handle each option
-    // switch (selectedOption)
-    // {
-    // case 0: // Start New Game
-    //     while (true)
-    //     {
-    //         system("cls");
-    //         printStartNewGame(selectedOption1);
-    //         menukey = _getch(); // Capture the arrow key input
-    //         if (menukey == 72) selectedOption1 = (selectedOption1 - 1 + 2) % 2; // Up arrow key
-    //         else if (menukey == 80) selectedOption1 = (selectedOption1 + 1) % 2; // Down arrow key
-    //         else if (menukey == 13) break; // Enter key
+    // Now selectedOption contains the index of the selected menu option
+    // You can use a switch statement to handle each option
+    switch (selectedOption)
+    {
+    case 0: // Start New Game
+        while (true)
+        {
+            system("cls");
+            printStartNewGame(selectedOption1);
+            menukey = _getch(); // Capture the arrow key input
+            if (menukey == 72) selectedOption1 = (selectedOption1 - 1 + 2) % 2; // Up arrow key
+            else if (menukey == 80) selectedOption1 = (selectedOption1 + 1) % 2; // Down arrow key
+            else if (menukey == 13) break; // Enter key
 
-    //     }
-    //     if (selectedOption1 == 0)
-    //     {
-    //         cout << "Enter the size of the grid: ";
-    //         int m;
-    //         cin >> m;
-    //         Graph g(m);
-    //         g.moveCar(m);
-    //         break;
-    //     }
-    //     else if (selectedOption1 == 1)
-    //     {
-    //         cout << "Enter the size of the grid: ";
-    //         int m;
-    //         cin >> m;
-    //         AutoCarGraph g(m);
-    //         g.moveCar(m);
-    //         break;
-    //     }
-    //     // Handle the selected option in the "Start New Game" menu
+        }
+        if (selectedOption1 == 0)
+        {
+            cout << "Enter the size of the grid: ";
+            int m;
+            cin >> m;
+            Graph g(m);
+            g.moveCar(m);
+            break;
+        }
+        else if (selectedOption1 == 1)
+        {
+            cout << "Enter the size of the grid: ";
+            int m;
+            cin >> m;
+            AutoCarGraph g(m);
+            g.moveCar(m);
+            break;
+        }
+        // Handle the selected option in the "Start New Game" menu
 
-    //     break;
-    // case 1: // Leaderboard
-    //     // ...
-    //     system("cls");
-    //     cout << "Leaderboard" << endl;
-    //     break;
-    // case 2: // Shop
-    //     // ...
-    //     break;
-    // }
+        break;
+    case 1: // Leaderboard
+        // ...
+        system("cls");
+        cout << "Leaderboard" << endl;
+        break;
+    case 2: // Shop
+        // ...
+        break;
+    }
 
-    // return 0;
+    return 0;
 }
 
 // All rights reserved by the Affan Hameed and Bilal Mehmood.
