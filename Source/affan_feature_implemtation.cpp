@@ -3,7 +3,7 @@
 #include "../Libraries/Objects_Manager.h"
 #include "../Libraries/Scoring_List.h"
 #include "../Libraries/Templatized_Queue.h"
-#include "../Libraries/LeaderBoard.h"
+#include "../Libraries/LeaderBoard_Binary_Tree.h"
 
 using namespace std;
 
@@ -62,10 +62,7 @@ void helper_function(){
             cout<<"Invalid Input"<<endl;
             break;
     }
+
+    
 }
 
-void Create_And_Display_Leaderboard(string filename){
-    LeaderBoard leaderboard;
-    leaderboard.populateFromFile(filename);
-    leaderboard.displayTop5();
-}

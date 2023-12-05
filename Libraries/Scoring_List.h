@@ -115,7 +115,12 @@ public:
 
     //to be used in case player selects the "NEW PLAYER" opetion then at the end of the game, the player's record will be added to the file 
     //via THIS particualr function.
-    void new_player_record(string player_name) {
+    void new_player_record(string &player_name) {
+        //add validation to ensure there are no spaces in the name
+        while (player_name.find(" ") != string::npos) {
+            cout<<"Please enter a valid name (without spaces):"<<endl;
+            cin>>player_name;
+        }
         ofstream file;
         file.open("../Source/Player Records.txt", ios::app);
         if (!file) {
@@ -130,12 +135,19 @@ public:
 
     //based on discussion, when user selects the "EXISTING PLAYER" option, the game will ask player to confirrm his/her name and then the game will
     //call this function and check name (includeing necessary input validation) and then the appropriate bool value will be returned.
-    bool check_if_player_exists(string player_name) {
+    bool check_if_player_exists(string &player_name) {
+        //add validation to ensure there are no spaces in the name
+        while (player_name.find(" ") != string::npos) {
+            cout<<"Please enter a valid name (without spaces):"<<endl;
+            cin>>player_name;
+        }
         ifstream file;
+        bool player_exists = false;
+
         file.open("../Source/Player Records.txt");
         if (!file) {
             cout << "Error opening file" << endl;
-            return false;
+            player_exists = false;
         }
         string name; 
         int attempts=0; 
@@ -145,7 +157,7 @@ public:
             while (file >> name) {
                 if (name == player_name) {
                     file.close();
-                    return true;
+                    player_exists = true;
                 }
             }
             cout<<(attempts+1)<<" wrong attempt(s), Please try again :"<<endl;
@@ -154,12 +166,18 @@ public:
             if (attempts == 3) {
                 cout<<"You have exceeded the maximum number of attempts. Re-directing to PLAYER MENU"<<endl;
                 file.close();
-                return false;
+                player_exists = false;
             }
         }
+        return player_exists;
     }
 
-    void update_player_record(string player_name){
+    void update_player_record(string &player_name){
+        //add validation to ensure there are no spaces in the name
+        while (player_name.find(" ") != string::npos) {
+            cout<<"Please enter a valid name (without spaces):"<<endl;
+            cin>>player_name;
+        }        
         if (check_if_player_exists(player_name) == true){
             string line;
             ifstream I_file;
