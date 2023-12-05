@@ -158,7 +158,6 @@ public:
                 if (name == player_name) {
                     file.close();
                     player_exists = true;
-                    return player_exists; // Add this line
                 }
             }
             cout<<(attempts+1)<<" wrong attempt(s), Please try again :"<<endl;
@@ -170,7 +169,6 @@ public:
                 cout<<"You have exceeded the maximum number of attempts. Re-directing to PLAYER MENU"<<endl;
                 file.close();
                 player_exists = false;
-                return player_exists;
             }
         }
         return player_exists;
