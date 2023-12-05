@@ -6,13 +6,13 @@
 #include <conio.h>
 #include <chrono>
 #include <windows.h>
-#include "../Libraries/Stack.h"
-#include "../Libraries/PriorityQueue.h"
-#include "../Libraries/Objects_Manager.h"
-#include "../Libraries/Queue.h"
-#include "../Libraries/BFSQueue.h"
+#include "Stack.h"
+#include "PriorityQueue.h"
+#include "Objects_Manager.h"
+#include "Queue.h"
+#include "BFSQueue.h"
 using namespace std;
-#pragma comment(lib, "winmm.lib")
+// #pragma comment(lib, "winmm.lib")
 
 int main();
 void PathNodesPrint();
@@ -111,6 +111,7 @@ public:
 
         objectQueue.Push(obj);
         adjList[pos].name = obj->Create_Object();
+        objectQueue.Pop();
         objectCount++;
     }
 
@@ -210,93 +211,102 @@ public:
     }
 
     void moveCar(int m)
+{
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    int width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    int Scorewidth = csbi.srWindow.Right - (csbi.srWindow.Left / 2) + 1;
+    int height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+    int newlines = (height - vertexCount * 2) / 2;
+    // Print the newlines
+    cout << string(newlines, '\n');
+    int selectCar = 0;
+    int key, n;
+
+    // PlaySound(TEXT("WhileGamming.wav"), NULL, SND_ASYNC | SND_LOOP);
+    while (true)
     {
-        CONSOLE_SCREEN_BUFFER_INFO csbi;
-        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-        int width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
-        int Scorewidth = csbi.srWindow.Right - (csbi.srWindow.Left / 2) + 1;
-        int height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
-
-        int newlines = (height - vertexCount * 2) / 2;
-        // Print the newlines
-        cout << string(newlines, '\n');
-        int selectCar = 0;
-        int key, n;
-
-        PlaySound(TEXT("WhileGamming.wav"), NULL, SND_ASYNC | SND_LOOP);
-        while (true)
-        {
-            system("cls");
-            SelectCar(selectCar);
-            key = _getch(); // Capture the arrow key input
-            if (key == 72) selectCar = (selectCar - 1 + 3) % 3; // Up arrow key
-            else if (key == 80) selectCar = (selectCar + 1) % 3; // Down arrow key
-            else if (key == 13) break; // Enter key
-        }
-        if (selectCar == 0) { n = 1; }
-        if (selectCar == 1) { n = 2; }
-        if (selectCar == 2) { n = 3; }
-
         system("cls");
+        SelectCar(selectCar);
+        key = _getch(); // Capture the arrow key input
+        if (key == 72) selectCar = (selectCar - 1 + 3) % 3; // Up arrow key
+        else if (key == 80) selectCar = (selectCar + 1) % 3; // Down arrow key
+        else if (key == 13) break; // Enter key
+    }
+    if (selectCar == 0) { n = 1; }
+    if (selectCar == 1) { n = 2; }
+    if (selectCar == 2) { n = 3; }
 
-        AutoCarGraph g(m); // Create a graph with m*m vertices
-        //makeGrid(m);
+    system("cls");
 
-        // Run BFS to ensure there's at least one path from start to end
-        while (true)
+    AutoCarGraph g(m); // Create a graph with m*m vertices
+    //makeGrid(m);
+
+    system("cls");
+    cout << string(newlines, '\n');
+    cout << string((width - 33 ) / 2, ' ') << "\033[32mGive us the finishing line (xy): \033[0m";
+    int endnode;
+    cin >> endnode;
+
+    adjList[m* m - 1].name = "<<+>>";
+    adjList[endnode].name = "<\033[32m|E|\033[35m>";
+
+    // Run BFS to ensure there's at least one path from start to end
+    while (true)
+    {
+        makeGrid(m);
+        if (bfs(0, endnode, m))
+            break;
+    }
+
+    int* distances = new int[m * m];
+    int* previous = new int[m * m];
+    dijkstra(0, m * m - 1, distances, previous);
+
+    // int start = 0; // starting node
+    // int end = m * m - 1; // destination node
+    // int* distances = new int[m * m];
+    // int* previous = new int[m * m];
+    // int** graph = autoGraph(m); // function to create your graph
+
+    // AStar(start, end, distances, previous, graph, m * m, m);
+
+    if (distances[m * m - 1] != INT_MAX)
+    {
+        moveCarAutomatically(0, endnode, previous, m, n);
+        system("cls");
+        cout << string(newlines, '\n');
+        cout << string((Scorewidth - 8) / 2, ' ') << "\033[32mYou win!\033[0m" << endl;
+        cout << string((Scorewidth - 33) / 2, ' ') << "Press ESC to return to main menu!" << endl;
+        int key = _getch();
+        if (key == 27)
         {
-            makeGrid(m);
-            if (bfs(0, m * m - 1, m))
-                break;
-        }
-
-        int* distances = new int[m * m];
-        int* previous = new int[m * m];
-        dijkstra(0, m * m - 1, distances, previous);
-
-        // int start = 0; // starting node
-        // int end = m * m - 1; // destination node
-        // int* distances = new int[m * m];
-        // int* previous = new int[m * m];
-        // int** graph = autoGraph(m); // function to create your graph
-
-        // AStar(start, end, distances, previous, graph, m * m, m);
-
-        if (distances[m * m - 1] != INT_MAX)
-        {
-            moveCarAutomatically(0, m * m - 1, previous, m, n);
             system("cls");
-            cout << string(newlines, '\n');
-            cout << string((Scorewidth - 8) / 2, ' ') << "\033[32mYou win!\033[0m" << endl;
-            cout << string((Scorewidth - 33) / 2, ' ') << "Press ESC to return to main menu!" << endl;
-            int key = _getch();
-            if (key == 27)
-            {
-                system("cls");
-                main();
-            }
-            else
-            {
-                cout << string(newlines, '\n');
-                cout << string((Scorewidth - 33) / 2, ' ') << "\033[31mInvalid key! Returning to main manu automatically\033[0m" << endl;
-                Sleep(2000);
-                system("cls");
-                main();
-            }
+            main();
         }
         else
         {
             cout << string(newlines, '\n');
-            cout << string((Scorewidth - 33) / 2, ' ') << "No path found from start to end. Returning..." << endl;
+            cout << string((Scorewidth - 33) / 2, ' ') << "\033[31mInvalid key! Returning to main manu automatically\033[0m" << endl;
             Sleep(2000);
             system("cls");
             main();
         }
-
-        delete[] distances;
-        delete[] previous;
-        //deleteGraph(graph, m);
     }
+    else
+    {
+        cout << string(newlines, '\n');
+        cout << string((Scorewidth - 33) / 2, ' ') << "No path found from start to end. Returning..." << endl;
+        Sleep(2000);
+        system("cls");
+        main();
+    }
+
+    delete[] distances;
+    delete[] previous;
+    //deleteGraph(graph, m);
+}
 
     void moveCarAutomatically(int start, int end, int* previous, int m, int n)
     {
@@ -322,27 +332,30 @@ public:
         bool isPaused = false;
         while (!path.isEmpty())
         {
-            int ch = _getch();
-            if (ch == 27) { // 27 is the ASCII value of the ESC key
-                if (isPaused)
-                {
-                    cout << string((Scorewidth - 13) / 2, ' ') << "Game resumed!" << endl;
-                }
-                else
-                {
-                    cout << endl << string((Scorewidth - 130) / 2, ' ') << string((50) / 2, ' ') << "\033[33mESC = Resume" << string((50) / 2, ' ') << "\033[34mGame paused!" << string((49) / 2, ' ') << "\033[31mR = Main Menu\033[0m" << endl;
-                    int key = _getch();
-                    if (key == 27)
+            if(_kbhit())
+            {
+                int ch = _getch();
+                if (ch == 27) { // 27 is the ASCII value of the ESC key
+                    if (isPaused)
                     {
-                        isPaused = !isPaused;
+                        cout << string((Scorewidth - 13) / 2, ' ') << "Game resumed!" << endl;
                     }
-                    else if (key == 114)
+                    else
                     {
-                        system("cls");
-                        main();
+                        cout << endl << string((Scorewidth - 130) / 2, ' ') << string((50) / 2, ' ') << "\033[33mESC = Resume" << string((50) / 2, ' ') << "\033[34mGame paused!" << string((49) / 2, ' ') << "\033[31mR = Main Menu\033[0m" << endl;
+                        int key = _getch();
+                        if (key == 27)
+                        {
+                            isPaused = !isPaused;
+                        }
+                        else if (key == 114)
+                        {
+                            system("cls");
+                            main();
+                        }
                     }
+                    isPaused = !isPaused;
                 }
-                isPaused = !isPaused;
             }
             if (!isPaused)
             {

@@ -5,12 +5,16 @@
 #include <ctime>
 #include <conio.h>
 #include <Windows.h>
-#include "../Libraries/Objects_Manager.h"
-#include "../Libraries/Queue.h"
-#include "../Libraries/BFSQueue.h"
+#include "Objects_Manager.h"
+#include "Queue.h"
+#include "Scoring_List.h"
+#include "BFSQueue.h"
 //#include "/Git Dev/DS-Project/DS-Project/Libraries/Queue.h"
 using namespace std;
-#pragma comment(lib, "winmm.lib")
+// #pragma comment(lib, "winmm.lib")
+
+void PathNodesPrint();
+int main();
 
 struct GNode
 {
@@ -21,11 +25,15 @@ struct GNode
     int edgeCount;
 };
 
+
 class Graph
 {
 private:
     GNode* adjList;
     Queue<Object*> objectQueue;
+    Object* obj;
+    string username; 
+    int user_type; 
     int vertexCount;
     int score = 0;
     int objectCount = 0;
@@ -93,6 +101,8 @@ public:
 
         objectQueue.Push(obj);
         adjList[pos].name = obj->Create_Object();
+        //dequeue the object from the queue
+        objectQueue.Pop(); //added this line
         objectCount++;
     }
 
@@ -169,8 +179,10 @@ public:
         }
     }
 
-    void moveCar(int m)
+    void moveCar(int m, string username, int user_type)
     {
+        this->username = username;
+        this->user_type = user_type;
         CONSOLE_SCREEN_BUFFER_INFO csbi;
         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
         int width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
@@ -183,7 +195,7 @@ public:
         int selectCar = 0;
         int key, n;
 
-        PlaySound(TEXT("WhileGamming.wav"), NULL, SND_ASYNC | SND_LOOP);
+        // PlaySound(TEXT("WhileGamming.wav"), NULL, SND_ASYNC | SND_LOOP);
         while (true)
         {
             system("cls");
@@ -330,12 +342,24 @@ public:
         // Print the newlines
         cout << string(newlines, '\n');
 
-        string yourscore = "Your Score is: ";
-
-        cout << string((width - 19) / 2, ' ') << "Your Score is: " << score << endl;
+        
+        cout << string((width - 19) / 2, ' ') << "Your Score is: " << Collected_Items::get_instance()->get_total_score() << endl;
+        cout << string((width - 19) / 2, ' ') << "Press Enter to return to the main menu" << endl;
+        int key = _getch();
+        if (key == 13)
+        {
+            system("cls");
+            main();
+        }
+        else
+        {
+            cout << string((width - 19) / 2, ' ') << "\033[31mWrong Input, Returning to Main Menu\033[0m" << endl;
+            Sleep(2000);
+            system("cls");
+            main();
+        }
     }
 
-    
     void printCar(int n, int carPos, int m)
     {
         system("cls");
@@ -351,7 +375,7 @@ public:
         // Print the newlines
         cout << string(newlines, '\n');
 
-        cout << string((Scorewidth + 70) / 2, ' ') << "Score: " << score << endl;
+        cout << string((Scorewidth + 70) / 2, ' ') << "Score: " << Collected_Items::get_instance()->get_total_score() << endl;
 
         for (int i = 0; i < vertexCount; ++i)
         {
@@ -365,22 +389,29 @@ public:
                 int v = i * vertexCount + j;
                 if (v == carPos)
                 {
+                    bool isRemoved = false;
+
                     if (adjList[v].name == "\033[32m>>$<<\033[0m")
                     {
                         adjList[v].name = "<<+>>";
-                        score += 10;
+                        // score += 10;
+                        Collected_Items::get_instance()->add_item(adjList[v].name, 3);
                     }
                     else if (adjList[v].name == "\033[36m<{~}>\033[0m")
                     {
-                        if (score > 0)
-                        {
-                            adjList[v].name = "<<+>>";
-                            score *= 2;
-                        }
+                        // cout<<"working"<<endl;                        
+                        adjList[v].name = "<<+>>";
+                        // score *= 2;
+                        Collected_Items::get_instance()->add_item("\033[36m<{~}>\033[0m", 2);
                     }
                     else if (adjList[v].name == "\033[31m/===\\\033[0m")
                     {
-                        score -= 10;
+                        // score -= 10;
+                        if (isRemoved == false)
+                        {
+                            Collected_Items::get_instance()->add_item(adjList[v].name, -1);
+                            isRemoved = true;
+                        }
                     }
                     car(m); // Print the car
                 }
@@ -408,7 +439,7 @@ public:
                     int v = i * vertexCount + j;
                     if (find(adjList[v].edges, adjList[v].edges + adjList[v].edgeCount, v + vertexCount) != adjList[v].edges + adjList[v].edgeCount)
                     {
-                        cout << "\033[37m  |      \033[0m";
+                        cout << "\033[37m  |      \033[0m"; 
                     }
                     else
                     {
@@ -418,11 +449,13 @@ public:
                 cout << endl;
             }
         }
+        // Collected_Items::get_instance()->print_items();
+        
     }
 
     void printYouWon()
     {
-        PlaySound(TEXT("WIN.wav"), NULL, SND_ASYNC | SND_LOOP);
+        // PlaySound(TEXT("WIN.wav"), NULL, SND_ASYNC | SND_LOOP);
         CONSOLE_SCREEN_BUFFER_INFO csbi;
         GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
         int width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
@@ -480,6 +513,12 @@ public:
 
             cout << "\033[0m" << endl;
             Sleep(500);
+        }
+        if (user_type==1){
+            Collected_Items::get_instance()->update_player_record(username);
+        }
+        else if (user_type==0){
+            Collected_Items::get_instance()->new_player_record(username);
         }
     }
 
