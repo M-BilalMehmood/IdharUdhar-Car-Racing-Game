@@ -19,10 +19,8 @@ class Collected_Items {
 private:
     Item* head;
 	Item* tail;
-
     static Collected_Items* instance;
-    //private contructor:
-    Collected_Items() : head(nullptr), tail(nullptr) {}
+    Collected_Items() : head(nullptr), tail(nullptr) {} //private constructor
 public:
     static Collected_Items* get_instance() {
         if (instance == nullptr) {
@@ -115,7 +113,6 @@ public:
         return total_score;
     }
 
-
     //to be used in case player selects the "NEW PLAYER" opetion then at the end of the game, the player's record will be added to the file 
     //via THIS particualr function.
     void new_player_record(string player_name) {
@@ -162,7 +159,6 @@ public:
         }
     }
 
-
     void update_player_record(string player_name){
         if (check_if_player_exists(player_name) == true){
             string line;
@@ -184,7 +180,7 @@ public:
                 string name;
                 int score, coin_count, multiplier_count, obstacle_count;
                 ss>>name>>score>>coin_count>>multiplier_count>>obstacle_count;
-                if (name == player_name) {
+                if (name == player_name && score < get_total_score()) { //this makes sure that only the highest score is recorded for the player.
                     O_file<<name<<" "<<get_total_score()<<" "<<get_coin_count()<<" "<<get_multiplier_count()<<" "<<get_obstacle_count()<<endl;
                 }
                 else {

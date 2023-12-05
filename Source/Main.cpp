@@ -111,6 +111,7 @@ int main()
     int selectedOption = 0;
     int selectedOption1 = 0;
     int menukey;
+    
     while (true)
     {
         system("cls");
@@ -169,6 +170,10 @@ int main()
     }
 
     return 0;
+
+
+    // helper_function();
+    // Create_And_Display_Leaderboard("Player Records.txt");
 }
 
 // All rights reserved by the Affan Hameed and Bilal Mehmood.
