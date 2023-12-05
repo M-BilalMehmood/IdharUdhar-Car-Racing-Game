@@ -105,12 +105,12 @@ public:
             {
                 if (rand() % 10 < 6.5) { // 65% chance to add a horizontal edge
                     if (j < n - 1) { // Don't add a horizontal edge for the last column
-                        addEdge(i, j, i, j + 1, rand() % 100 + 1); // Random weight between 1 and 100
+                        addEdge(i, j, i, j + 1, 10); //weight = 10
                     }
                 }
                 if (rand() % 10 < 6.5) { // 65% chance to add a vertical edge
                     if (i < n - 1) { // Don't add a vertical edge for the last row
-                        addEdge(i, j, i + 1, j, rand() % 100 + 1); // Random weight between 1 and 100
+                        addEdge(i, j, i + 1, j, 10); // weight = 10
                     }
                 }
             }
@@ -139,52 +139,151 @@ public:
         }
     }
 
+    void SelectCar(int selectedOption)
+    {
+        const char* options[] = { "\\o=o>", "Lo=o>", "Co=o>" };
+        const int numOptions = sizeof(options) / sizeof(options[0]);
+
+        // Get the console size
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+        int width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        int height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+        // Print the game name in the center
+        PathNodesPrint(); cout << "\n\n";
+
+        cout << string((width - 10) / 2, ' ') << "\033[34mSelect Your Car\033[0m" << endl;
+
+        // Print the options in the center
+        for (int i = 0; i < numOptions; ++i)
+        {
+            if (i == selectedOption)
+            {
+                cout << string((width - strlen(options[i])) / 2, ' ') << "\033[33m> " << options[i] << "\n\033[0m";
+            }
+            else
+            {
+                cout << string((width - strlen(options[i])) / 2, ' ') << "  " << options[i] << "\n";
+            }
+        }
+    }
+
     void moveCar(int m)
     {
-        cout << "Choose your vehicle:" << endl;
-        cout << "1.\033[33m \\o=o>\033[0m" << endl;
-        cout << "2.\033[33m Lo=o>\033[0m" << endl;
-        cout << "3.\033[33m Co=o>\033[0m" << endl;
-        int n;
-        cout << "::> ";
-        cin >> n;
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+        int width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        int Scorewidth = csbi.srWindow.Right - (csbi.srWindow.Left / 2) + 1;
+        int height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+
+        int newlines = (height - vertexCount * 2) / 2;
+        // Print the newlines
+        cout << string(newlines, '\n');
+        int selectCar = 0;
+        int key, n;
+
         PlaySound(TEXT("WhileGamming.wav"), NULL, SND_ASYNC | SND_LOOP);
-        system("cls");
         while (true)
         {
-            Graph g(m); // Create a graph with m*m vertices
-            // ... Add edges to the graph ...
-
-            g.makeGrid(m);
-
-            if (g.bfs(g, 0, m * m - 1, m))
+            system("cls");
+            SelectCar(selectCar);
+            key = _getch(); // Capture the arrow key input
+            if (key == 72) selectCar = (selectCar - 1 + 3) % 3; // Up arrow key
+            else if (key == 80) selectCar = (selectCar + 1) % 3; // Down arrow key
+            else if (key == 13) break; // Enter key
+        }
+        if (selectCar == 0) { n = 1; }
+        if (selectCar == 1) { n = 2; }
+        if (selectCar == 2) { n = 3; }
+        system("cls");
+        bool isPaused = false;
+        while (true)
+        {
+            if (!isPaused)
             {
-                int carPos = 0; // The car starts at node 0
-                while (true)
+                Graph g(m); // Create a graph with m*m vertices
+                // ... Add edges to the graph ...
+
+                g.makeGrid(m);
+
+                if (g.bfs(g, 0, m * m - 1, m))
                 {
-                    g.printCar(m, carPos, n);
-                    int key = _getch(); // Capture the arrow key input
-                    int newPos = carPos;
-                    if (key == 72) newPos -= m; // Up arrow key
-                    else if (key == 80) newPos += m; // Down arrow key
-                    else if (key == 75) newPos--; // Left arrow key
-                    else if (key == 77) newPos++; // Right arrow key
-                    // Check if the move is valid
-                    if (find(g.adjList[carPos].edges, g.adjList[carPos].edges + g.adjList[carPos].edgeCount, newPos) != g.adjList[carPos].edges + g.adjList[carPos].edgeCount)
+                    int carPos = 0; // The car starts at node 0
+                    while (true)
                     {
-                        carPos = newPos;
-                    }
-                    if (carPos == m * m - 1) // We reached the destination
-                    {
-                        // system("cls");
                         g.printCar(m, carPos, n);
-                        printYouWon();
-                        system("cls");
-                        DisplayScore();
-                        break;
+                        int key = _getch(); // Capture the arrow key input
+                        if (key == 27) // 27 is the ASCII value of the ESC key
+                        {
+                            try {
+                                if (isPaused)
+                                {
+                                    cout << string((Scorewidth - 13) / 2, ' ') << "Game resumed!" << endl;
+                                }
+                                else
+                                {
+                                    cout << endl << string((Scorewidth - 130) / 2, ' ') << string((50) / 2, ' ') << "\033[33mESC = Resume" << string((50) / 2, ' ') << "\033[34mGame paused!" << string((49) / 2, ' ') << "\033[31mR = Main Menu\033[0m" << endl;
+                                    int key = _getch();
+                                    if (key == 27)
+                                    {
+                                        isPaused = !isPaused;
+                                    }
+                                    else if (key == 114)
+                                    {
+                                        system("cls");
+                                        main();
+                                    }
+                                }
+                            }
+                            catch (length_error& e) {
+                                Scorewidth /= 2; // Decrease the size of Scorewidth
+                                if (isPaused)
+                                {
+                                    cout << string((Scorewidth - 13) / 2, ' ') << "Game resumed!" << endl;
+                                }
+                                else
+                                {
+                                    cout << endl << string((Scorewidth - 20) / 2, ' ') << string((25) / 2, ' ') << "\033[33mESC = Resume" << string((25) / 2, ' ') << "\033[34mGame paused!" << string((24) / 2, ' ') << "\033[31mR = Main Menu\033[0m" << endl;
+                                }
+                                int key = _getch();
+                                if (key == 27)
+                                {
+                                    isPaused = !isPaused;
+                                }
+                                else if (key == 114)
+                                {
+                                    system("cls");
+                                    main();
+                                }
+                            }
+                            isPaused = !isPaused;
+                        }
+                        else if (!isPaused)
+                        {
+                            int newPos = carPos;
+                            if (key == 72) newPos -= m; // Up arrow key
+                            else if (key == 80) newPos += m; // Down arrow key
+                            else if (key == 75) newPos--; // Left arrow key
+                            else if (key == 77) newPos++; // Right arrow key
+                            // Check if the move is valid
+                            if (find(g.adjList[carPos].edges, g.adjList[carPos].edges + g.adjList[carPos].edgeCount, newPos) != g.adjList[carPos].edges + g.adjList[carPos].edgeCount)
+                            {
+                                carPos = newPos;
+                            }
+                            if (carPos == m * m - 1) // We reached the destination
+                            {
+                                // system("cls");
+                                g.printCar(m, carPos, n);
+                                printYouWon();
+                                system("cls");
+                                DisplayScore();
+                                break;
+                            }
+                        }
                     }
+                    break;
                 }
-                break;
             }
         }
     }
@@ -236,57 +335,7 @@ public:
         cout << string((width - 19) / 2, ' ') << "Your Score is: " << score << endl;
     }
 
-    void print(int n)
-    {
-        system("cls");
-        for (int i = 0; i < vertexCount; ++i)
-        {
-            for (int j = 0; j < vertexCount; ++j)
-            {
-                int v = i * vertexCount + j;
-                // cout << i << j;
-                if (i == 0 && j == 0)
-                {
-                    cout << "\033[35m<\033[32m|S|\033[35m>\033[0m";
-                    //cout << "\033[33mCo=o>\033[0m";
-                }
-                else if (i == n - 1 && j == n - 1)
-                {
-                    cout << "\033[35m<\033[32m|E|\033[35m>\033[0m";
-                }
-                else
-                {
-                    cout << "\033[35m<^-^>\033[0m";
-                }
-                if (find(adjList[v].edges, adjList[v].edges + adjList[v].edgeCount, v + 1) != adjList[v].edges + adjList[v].edgeCount)
-                {
-                    cout << "\033[36m----\033[0m";
-                }
-                else
-                {
-                    cout << "    ";
-                }
-            }
-            cout << endl;
-            if (i < vertexCount - 1)
-            {
-                for (int j = 0; j < vertexCount; ++j)
-                {
-                    int v = i * vertexCount + j;
-                    if (find(adjList[v].edges, adjList[v].edges + adjList[v].edgeCount, v + vertexCount) != adjList[v].edges + adjList[v].edgeCount)
-                    {
-                        cout << "\033[36m  |      \033[0m";
-                    }
-                    else
-                    {
-                        cout << "         ";
-                    }
-                }
-                cout << endl;
-            }
-        }
-    }
-
+    
     void printCar(int n, int carPos, int m)
     {
         system("cls");
