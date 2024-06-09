@@ -1,4 +1,4 @@
-# DS-Project
+# IdharUdhar Car Racing Game
 This is the final project of data structures for Semester 3 with my lovely friend Affan Hameed!
 
 
